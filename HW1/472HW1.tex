@@ -1,0 +1,46 @@
+\title{CS 472 HW 1}
+\author{
+        Aaron Havens \\
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{amssymb} %maths
+\usepackage{amsmath} %maths
+\usepackage{graphicx}
+\begin{document}
+\maketitle
+
+\section{The Turing Test and Progress since the Loebner Prize}
+\paragraph{The Turing Test}
+The \textit{Turing Test} was developed by Alan Turing in 1950, introduced in his paper ``Computing Machinery and Intelligence'' ~\cite{turing}. The purpose of the test is to measure a machine's ability to behave intelligently in way that is equivalent or indistinguishable from a human. The test involves a human interrogator and two other players, one human and one machine. The task of the interrogator is to observe digital text responses to a written question and to discern the machine player from the human.
+\paragraph{The Loebner Prize}
+Several decades following the conception of Alan's Turing Test an annual competition, the \textit{Loebner Prize}, commenced which sought to award the most human-like AI subject to the Turing Test ~\cite{loebner}. The Loebner Prize is somewhat controversial among the research community due to the subjective nature of the competition and varying success criteria. Many also argue that the test is not a means of pursuing intelligence, only human-like intelligence, which may just be an arbitrary form. Over the years, many bots have fooled human interrogators, but none have achieved the necessary criteria to pass the Turing Test. These competitions mostly facilitated advancement in human error detection, in order to interface with uncertain information input. Over the years, the interaction time increased from 5 minutes to  25 minutes, with often restricted conversation.
+\paragraph{How will AI Stack Up in Ten Years?}
+Although most academic researchers aren't necessarily working towards human-like intelligence, I believe that given rapid advancements in deep learning and access to enterprise-size data, AI that satisfies and exceeds the criteria of the Turing test is impending. Primarily because large tech companies have so much to benefit from a human AI as a service.
+\section{Problem 2.3, Russel}
+For each of the following assertions, say whether it is true or false and support your
+answer with examples or counterexamples where appropriate.
+\paragraph{a.) An agent that senses only partial information about the state cannot be perfectly rational. \underline{False}:}
+If your performance criteria is only concerned with the state you can observe, then your agent is able to act perfectly rationally. For example, the vacuum cleaner always make a rational decision without knowing the other grid states.
+\paragraph{b.) There exist task environments in which no pure reflex agent can behave rationally. \underline{True}:}
+If past state information about the environment is required for the agent to act rationally, a pure reflex agent can not be perfectly rational. An example could be a card matching game, were the agent's performance depends on it's past observations of cards.
+\paragraph{c.) There exists a task environment in which every agent is rational. \underline{True}:} An environment where every possible action (or no action) will give equal utility makes an action from any agent achieve equal and maximum utility. All agents act rationally.
+\paragraph{d.) The input to an agent program is the same as the input to the agent function. \underline{False}:} The agent program only takes in current observable state information about the environment. However, the agent program can store this information and provide a history of states as input to the agent function.
+\paragraph{e.) Every agent function is implementable by some program/machine combination. \underline{False}:} Suppose there was an agent function where every preceding state is needed to make a rational decision. Eventually, the agent will run out of memory and the function will fail.
+\paragraph{f. ) Suppose an agent selects its action uniformly at random from the set of possible actions. There exists a deterministic task environment in which this agent is rational. \underline{True}:}  This may be a similar task environment as discussed in \textbf{c.)}, where every action gives equal reward and maximizes utility.
+\paragraph{g. ) It is possible for a given agent to be perfectly rational in two distinct task environments. \underline{True}:} It is possible for two  unique task environments to both be spanned by an agent's rational action set. 
+\paragraph{h. ) Every agent is rational in an unobservable environment. \underline{False}:} A priori information about the task environment can allow an agent to make rational decisions, even when no observations can be made. In contrast to this agent, an agent with no task knowledge  would not act rationally. One example could be a racetrack with a constant turning radius where the goal is for a car agent to stay on the road. If the car was designed with an a priori to constantly turn for all of time, it could be rational, but without a prior, it would not be.
+\paragraph{i.) A perfectly rational poker-playing agent never loses. \underline{False}:} A game of poker has stochastic elements. Even if two perfectly rational agents were pitted against each other,one may lose due to an unfavorable outcome of an expectation.
+
+\begin{thebibliography}{2}
+
+\bibitem{turing} 
+A. ~Turing ,\emph{Computing Machinery and Intelligence},  Mind 49: 433-460, 1950.
+\bibitem{loebner}
+\emph{Homepage of the Loebner Prize in Artificial Intelligence, The first "Turing Test"}, loebner.net, 2015.
+
+\end{thebibliography}
+
+
+\end{document}
