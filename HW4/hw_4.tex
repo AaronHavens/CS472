@@ -1,0 +1,72 @@
+\title{CS 472 HW 4: Project 1}
+\author{
+        Aaron Havens\\
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{amssymb} %maths
+\usepackage{amsmath} %maths
+\usepackage{graphicx}
+\usepackage{array}
+\graphicspath{{figs/}}
+\begin{document}
+\maketitle
+\paragraph{2.a)}
+Using the standard heuristic function listed in the assignment can not be an admissible heuristic. The function isn't guaranteed to underestimate the distance to the goal. It's not monotone or \textit{consistent} given that any link can have a number of query words and orderings. Different weights can be supplied to the 3 heuristics, but in these results, all are kept at 1.
+\paragraph{2.c)}
+It seems to work very well on these data sets or atleast better than DFS and BFS alone. The dominating heuristic numerically is the number of `QUERY' words. It very difficult to decide how to improve the heuristic since we can't assume any other semantic meaning or patterns in the web pages themselves or the net structure. If given more web pages, one could very well learn or classify arbitrary ``semantic'' relationships of the words even though \textit{QUERY1} or \textit{w22} does not mean anything to us.
+\paragraph{Note on Beam-search}
+By extending BestFS to Beam-search, we limit the queue size of the our breadth-first strategy. There are certain beam widths that improve the search in terms of nodes expanded, however if the beam width is narrow the program may simply throughout the solution and find nothing. This could be addressed by possibly restarting beam search somewhere else.
+\newpage
+\section{Results}
+\begin{table}[h]
+\caption{Intranet1} \label{tab:title} 
+\begin{center}
+ \begin{tabular}{|c| c |c |c|} 
+ \hline
+ Search Method & Nodes Expanded & Path Length & Solution Path \\ [0.5ex] 
+ \hline
+ Depth-first Search & 59 & 9 & \multicolumn{1}{m{3cm}|}{['1', '18', '95', '56', '79', '87', '78', '7', '50']}\\ 
+ \hline
+ Breadth-first Search & 91 & 5 & \multicolumn{1}{m{3cm}|}{['1', '18', '29', '99', '50']}\\
+ \hline
+ Best-first Search & 23 & 6 & \multicolumn{1}{m{3cm}|}{['1', '23', '60', '95', '93', '87', '79', '2', '83', '50']}\\[1ex] 
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{table}[h]
+\caption{Intranet5} \label{tab:title} 
+\begin{center}
+ \begin{tabular}{|c| c |c |c|} 
+ \hline
+ Search Method & Nodes Expanded & Path Length& Solution Path \\ [0.5ex] 
+ \hline
+ Depth-first Search & 88 & 21& \multicolumn{1}{m{3cm}|}{['1', '70', '93', '8', '1', '40', '99', '89', '87', '96', '95', '41', '47', '63', '76', '74', '66', '75', '84', '72', '62']}\\ 
+ \hline
+ Breadth-first Search & 88 & 9& \multicolumn{1}{m{3cm}|}{['1', '40', '99', '89', '87', '96', '95', '72', '62']}\\
+ \hline
+ Best-first Search & 33 & 9& \multicolumn{1}{m{3cm}|}{['1', '40', '99', '89', '87', '96', '95', '72', '62']}\\[1ex] 
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+\begin{table}[h]
+\caption{Intranet7} \label{tab:title} 
+\begin{center}
+ \begin{tabular}{|c| c | c | c|} 
+ \hline
+ Search Method & Nodes Expanded & Path Length&Solution Path \\ [0.5ex] 
+ \hline
+ Depth-first Search & 48 & 22&\multicolumn{1}{m{3cm}|}{['1', '99', '17', '88', '8', '19', '89', '23', '73', '34', '92', '63', '71', '20', '95', '75', '55', '60', '96', '12', '61', '86']}\\ 
+ \hline
+ Breadth-first Search & 56 & 7&\multicolumn{1}{m{3cm}|}{
+['1', '48', '71', '57', '62', '61', '86']}\\
+ \hline
+ Best-first Search & 14 & 7&\multicolumn{1}{m{3cm}|}{['1', '48', '71', '57', '62', '61', '86']}\\[1ex] 
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+\end{document}

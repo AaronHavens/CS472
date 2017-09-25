@@ -1,5 +1,6 @@
 import re
 import time
+
 #checks string for query pattern
 def has_query(html_string,query):
 	m = re.findall(query,html_string)
@@ -73,6 +74,7 @@ def report_path(map, goal):
 	path.insert(0,current_node)
 	return path
 
+
 def DFS(start_node,goal_query, visited=None):
 	global expanded
 
@@ -124,6 +126,7 @@ def BFS(start_node, goal_query):
 		return report_path(path,node)
 	else:
  		return None
+
 def Best_FS(start_node,goal_query,max_size = 0):
 	global expanded
 	
@@ -158,19 +161,37 @@ def Best_FS(start_node,goal_query,max_size = 0):
 		return report_path(path,node)
 	else:
  		return None
-intra = 'intranet1'	
-expanded = 0
+
+
+intranets = []
+intranets.append('intranet1')
+intranets.append('intranet5')
+intranets.append('intranet7')
+
+
 query = 'QUERY1 QUERY2 QUERY3 QUERY4'
 start = '1'
-h = {'page3':4,'page2':10}
-time.clock()
-print(DFS(start,query),expanded)
-expanded = 0
-print(time.clock())
-print(BFS(start,query),expanded)
-expanded = 0
-print(time.clock())
-print(Best_FS(start,query,10),expanded)
-print(time.clock())
+f = open('results.txt', 'w')
+for intra in intranets:
+	print('----------{:s}---------'.format(intra))
+	f.write('\n----------{:s}---------\n'.format(intra))
+	intra_n = intra
+	expanded = 0
+	t0 = time.time()
+	path = DFS(start,query)
+	t1 = time.time() - t0
+	print('DFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t1))
+	f.write('\nDFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t1))
+	expanded = 0
+	path = BFS(start,query)
+	t2 = time.time() - t0 - t1
+	print('BFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t2))
+	f.write('\nBFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t2))
+	expanded = 0
+	path = Best_FS(start,query)
+	t3 = time.time() - t0 - t1 -t2
+	print('BestFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t3))
+	f.write('\nBestFS:\nPath:{},\nPath Length: {:d},\nNodes Expanded: {:d} \ntime[s]:{:f}'.format(path,len(path),expanded,t3))
+f.close()
 
 
