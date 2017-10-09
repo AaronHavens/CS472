@@ -1,4 +1,4 @@
-READ ME!
+# Othello alpha_beta game playing agent
 
 No dependencies except for Python 3.5
 
@@ -8,3 +8,4 @@ No dependencies except for Python 3.5
 4. Continue until game is complete. The out put will tell you the score difference between you and your opponent.
 5. You can change the depth and evaluation options in the script where it marks '#CONFIG######'
 
+<img src="https://github.com/AaronHavens/CS472/blob/master/HW5/figs/start_board.PNG" height="200" width="200"> <img src="https://github.com/AaronHavens/CS472/blob/master/HW5/figs/end_board.PNG" height="200" width="200">
