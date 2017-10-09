@@ -1,312 +1,268 @@
-"""Games, or Adversarial Search (Chapter 5)"""
+# import matplotlib.patches as patches
+# import matplotlib.pyplot as plt
 
-from collections import namedtuple
-import random
-
-infinity = float('inf')
-GameState = namedtuple('GameState', 'to_move, utility, board, moves')
-
-# ______________________________________________________________________________
-# Minimax Search
-
-
-
-def alphabeta_search(state, game):
-    """Search game to determine best action; use alpha-beta pruning.
-    As in [Figure 5.7], this version searches all the way to the leaves."""
-
-    player = game.to_move(state)
-
-    # Functions used by alphabeta
-    def max_value(state, alpha, beta):
-        if game.terminal_test(state):
-            return game.utility(state, player)
-        v = -infinity
-        for a in game.actions(state):
-            v = max(v, min_value(game.result(state, a), alpha, beta))
-            if v >= beta:
-                return v
-            alpha = max(alpha, v)
-        return v
-
-    def min_value(state, alpha, beta):
-        if game.terminal_test(state):
-            return game.utility(state, player)
-        v = infinity
-        for a in game.actions(state):
-            v = min(v, max_value(game.result(state, a), alpha, beta))
-            if v <= alpha:
-                return v
-            beta = min(beta, v)
-        return v
-
-    # Body of alphabeta_cutoff_search:
-    best_score = -infinity
-    beta = infinity
-    best_action = None
-    for a in game.actions(state):
-        v = min_value(game.result(state, a), best_score, beta)
-        if v > best_score:
-            best_score = v
-            best_action = a
-    return best_action
-
-
-def alphabeta_cutoff_search(state, game, d=4, cutoff_test=None, eval_fn=None):
-    """Search game to determine best action; use alpha-beta pruning.
-    This version cuts off search and uses an evaluation function."""
-
-    player = game.to_move(state)
-
-    # Functions used by alphabeta
-    def max_value(state, alpha, beta, depth):
-        if cutoff_test(state, depth):
-            return eval_fn(state)
-        v = -infinity
-        for a in game.actions(state):
-            v = max(v, min_value(game.result(state, a),
-                                 alpha, beta, depth + 1))
-            if v >= beta:
-                return v
-            alpha = max(alpha, v)
-        return v
-
-    def min_value(state, alpha, beta, depth):
-        if cutoff_test(state, depth):
-            return eval_fn(state)
-        v = infinity
-        for a in game.actions(state):
-            v = min(v, max_value(game.result(state, a),
-                                 alpha, beta, depth + 1))
-            if v <= alpha:
-                return v
-            beta = min(beta, v)
-        return v
-
-    # Body of alphabeta_cutoff_search starts here:
-    # The default test cuts off at depth d or at a terminal state
-    cutoff_test = (cutoff_test or
-                   (lambda state, depth: depth > d or
-                    game.terminal_test(state)))
-    eval_fn = eval_fn or (lambda state: game.utility(state, player))
-    best_score = -infinity
-    beta = infinity
-    best_action = None
-    for a in game.actions(state):
-        v = min_value(game.result(state, a), best_score, beta, 1)
-        if v > best_score:
-            best_score = v
-            best_action = a
-    return best_action
-
-# ______________________________________________________________________________
-# Players for Games
-
-
-def query_player(game, state):
-    """Make a move by querying standard input."""
-    print("current state:")
-    game.display(state)
-    print("available moves: {}".format(game.actions(state)))
-    print("")
-    move_string = input('Your move? ')
-    try:
-        move = eval(move_string)
-    except NameError:
-        move = move_string
-    return move
-
-
-def random_player(game, state):
-    """A player that chooses a legal move at random."""
-    return random.choice(game.actions(state))
-
-
-def alphabeta_player(game, state):
-    return alphabeta_search(state, game)
-
-
-# ______________________________________________________________________________
-# Some Sample Games
-
-#
-def actions(board, player):
+#Move generator
+def actions(board_, player):
         """Return a list of the allowable moves at this point."""
         validMoves = []
-        board = copy_board(board)
-        for x in range(8):
-            for y in range(8):
-                if isValidMove(board,player,x,y):
-                    validMoves.append([x,y])
+        board = copy_board(board_)
+        for row in range(8):
+            for col in range(8):
+                if isValidMove(board,player,row,col):
+                    validMoves.append([row,col])
         return validMoves
-
-def isOnBoard(x,y):
-    return (x <= 7 and x >= 0 and y <= 7 and y >= 0)
-
+#Makes sure query is in bounds of board
+def isOnBoard(row,col):
+    return (row <= 7 and row >= 0 and col <= 7 and col >= 0)
+#Conveniently return opponent player
 def opponent(player):
     if(player == 'W'):
         return 'B'
     else:
         return 'W'
 
+#Makes copy of entire board state. Used alot to prevent mutable confusions
 def copy_board(board):
     board_copy = []
-    for x in range(8):
+    for row in range(8):
         board_copy.append([' ']*8)
-    for x in range(8):
-        for y in range(8):
-            board_copy[x][y] = board[x][y]
+    for row in range(8):
+        for col in range(8):
+            board_copy[row][col] = board[row][col]
     return board_copy
 def new_board():
     new_board = []
-    for x in range(8):
+    for row in range(8):
         new_board.append([' ']*8)
     return new_board
-def make_move(board,player,m):
+def make_move(board_,player,m):
+    board = copy_board(board_)
     to_flip = isValidMove(board,player,m[0],m[1])
     if to_flip:
         board[m[0]][m[1]] = player
-        for x,y in to_flip:
-            board[x][y] = player
+        for row,col in to_flip:
+            board[row][col] = player
     return board
 
-def score(player, board):
+#Returns difference of # tiles between player and opponent
+def score(board, player):
     player_score, opponent_score = 0, 0
-    opponent = opponent(player)
-    for x in range(8):
-        for y in range(8):
-            if(board[x][y] != ' '):
-                if board[x][y] == player:
+    opponent_p = opponent(player)
+    for row in range(8):
+        for col in range(8):
+            if(board[row][col] != ' '):
+                if board[row][col] == player:
                     player_score += 1
-                elif board[x][y] == opponent:
+                elif board[row][col] == opponent_p:
                     opponent_score += 1
-
     return player_score - opponent_score
 
-def alpha_beta(board,player,beta,depth,eval):
+#Is it a corner? corners are good...
+def isCorner(row,col):
+    return((row == 0 and col == 0) or (row == 0 and col == 7) or (row == 7 and col == 7) or (row == 7  and col == 0))
+
+#Returns difference in score, like score, but heavily weights corners.
+def score_corners(board,player):
+    player_score, opponent_score = 0, 0
+    opponent_p = opponent(player)
+    for row in range(8):
+        for col in range(8):
+            if(board[row][col] != ' '):
+                if board[row][col] == player:
+                    if isCorner(row,col):
+                        player_score += 15
+                    else:
+                        player_score += 1
+                elif board[row][col] == opponent_p:
+                    if isCorner(row,col):
+                        opponent_score += 15
+                    else:
+                        opponent_score += 1
+    return player_score - opponent_score
+
+#Alpha beta algorithm with depth cutoff. Specify evaluation function. Depths > 5 take a very long time
+def alpha_beta(board,player,alpha,beta,depth,evaluate):
     if depth == 0:
         return evaluate(board,player), None
     def value(board,alpha,beta):
-        return - alpha_beta(opponent(player),board,-beta,-alpha,depth-1,eval)[0]
+        return - alpha_beta(board,opponent(player),-beta,-alpha,depth-1,evaluate)[0]
     moves = actions(board,player)
     if not moves:
         if not actions(board ,opponent(player)):
             return final_val(board,player), None
-        return value(board), None
+        return value(board,alpha,beta), None
     best_move = moves[0]
     for move in moves:
         if alpha >= beta:
             break
-        val = value(make_move(board, opponent(player),move), alpha,beta)
+        val = value(make_move(board, player,move), alpha,beta)
         if val > alpha:
             alpha = val
             best_move = move
     return alpha, best_move
+
+#Initializes the board config to start the game
 def start_config(board):
     board[3][3], board[4][3] = 'B','W'
     board[3][4], board[4][4] = 'W','B'
+def n_pieces(board):
+    n = 0
+    for i in range(8):
+        for j in range(8):
+            if(board[i][j] != ' '):
+                n += 1
+    return n
+
 #check if move is valid and which tiles would be flipped as a result
-def isValidMove(board,player,x_s,y_s):
-    if board[x_s][y_s] != ' ' or not isOnBoard(x_s,y_s):
+#This is done by looking along the 8 principle directions
+def isValidMove(board_,player,row_s,col_s):
+    board = copy_board(board_)
+    if board[row_s][col_s] != ' ' or not isOnBoard(row_s,col_s):
         return False
-    board[x_s][y_s] = player
+    board[row_s][col_s] = player
     other_player = opponent(player)
     flip_tiles = []
-    for xd,yd in [[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]:
-        x,y = x_s,y_s
-        x += xd
-        y += yd
-        if isOnBoard(x,y) and board[x][y] == other_player:
-            x += xd
-            y += yd
-            if not isOnBoard(x,y):
+    for row_d,col_d in [[0,1],[1,1],[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[-1,1]]:
+        row,col = row_s,col_s
+        row += row_d
+        col += col_d
+        if isOnBoard(row,col) and board[row][col] == other_player:
+            row += row_d
+            col += col_d
+            if not isOnBoard(row,col):
                 continue
-            while board[x][y] == other_player:
-                x += xd
-                y += yd
-                if not isOnBoard(x,y):
+            while board[row][col] == other_player:
+                row += row_d
+                col += col_d
+                if not isOnBoard(row,col):
                     break
-            if not isOnBoard(x,y):
+            if not isOnBoard(row,col):
                 continue
-            if board[x][y] == player:
+            if board[row][col] == player:
                 while True:
-                    x -= xd
-                    y -= yd
-                    if x == x_s and y == y_s:
+                    row -= row_d
+                    col -= col_d
+                    if row == row_s and col == col_s:
                         break
-                    flip_tiles.append([x,y])
-    board[x_s][y_s] = ' '
+                    flip_tiles.append([row,col])
+    board[row_s][col_s] = ' '
     if len(flip_tiles) == 0:
         return False
     return flip_tiles
 
+#Prints out nice terminal board
 def disp_board(board):
     print('-----------------')
     for i in range(8):
         line_str = '|'
         for j in range(8):
-            line_str += board[j][i] +'|'
+            line_str += board[i][j] +'|'
         print(line_str )
         print('-----------------')
+# def disp_graphic_board(board,ax):
+#     ax.set_facecolor('g')
+#     for j in range(8):
+#         for i in range(8):
+#             if board[i][j] != ' ':
+#                 if(board[i][j] == 'W' ):
+#                     color = 'white'
+#                 elif(board[i][j] == 'B' ):
+#                     color = 'black'
+#                 ax.add_patch(patches.Circle([i, j],.2,facecolor = color))
 
-def final_val(board, player):
-    diff = score(board,player)
+#     plt.axis('equal')
+
+#This used to heavily weight the terminal state of the game. If a move results in loss,
+#it should be heavily penalized. Same for winning.
+def final_val(board_, player):
+    diff = score(copy_board(board_),player)
     if diff < 0:
-        return MIN_VAL
+        return -1000
     elif diff > 0:
-        return MAX_VAl
+        return 1000
     return diff
-#
-class Game():
-    """A game is similar to a problem, but it has a utility for each
-    state and a terminal test instead of a path cost and a goal
-    test. To create a game, subclass this class and implement actions,
-    result, utility, and terminal_test. You may override display and
-    successors or you can inherit their default methods. You will also
-    need to set the .initial attribute to the initial state; this can
-    be done in the constructor."""
 
-    
+def representsInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
 
-    def result(self, state, move):
-        """Return the state that results from making a move from a state."""
-        raise NotImplementedError
-
-    def utility(self, state, player):
-        """Return the value of this final state to player."""
-        raise NotImplementedError
-
-    def terminal_test(self, state):
-        """Return True if this is a final state for the game."""
-        return not self.actions(state)
-
-    def to_move(self, state):
-        """Return the player whose move it is in this state."""
-        return state.to_move
-
-    def display(self, state):
-        """Print or otherwise display the state."""
-        print(state)
-
-    def __repr__(self):
-        return '<{}>'.format(self.__class__.__name__)
-
-    def play_game(self, *players):
-        """Play an n-person, move-alternating game."""
-        state = self.initial
-        while True:
-            for player in players:
-                move = player(self, state)
-                state = self.result(state, move)
-                if self.terminal_test(state):
-                    self.display(state)
-                    return self.utility(state, self.to_move(self.initial))
+#CONFIG###########
 board = new_board()
 start_config(board)
-#disp_board(board)
-print(actions(board,'B'))
-board = make_move(board,'B',[2,4])
-board = make_move(board,'W',[4,5])
-board = make_move(board,'W',[1,4])
-#board = make_move(board,'B',[3,5])
+cpu_skill = 2
+cpu_corner_greedy = True
+##################
+
+print('Welcome to Othello')
+print('Your cpu opponent is set at skill level: {}'.format(cpu_skill))
+if cpu_corner_greedy:
+    print('Your cpu opponent is corner greedy')
+print('You have the first move!')    
 disp_board(board)
+player = 'B'
+opp = opponent(player)
+over = False
+i = 1
+while not over:
+    print("Turn: {}".format(i))
+    i += 1
+    no_move_p = False
+    no_move_op = False
+    board_copy = copy_board(board)
+    #alpha, move = alpha_beta(board_copy,player,-1000,1000,3,score_corners)
+    moves = actions(board,player)
+    if moves:
+        print("Your available moves [row,col]: {}".format(moves))
+        no_good_input = True
+        while(no_good_input):
+            row = input('enter move row: ')
+            col = input('enter move col: ')
+            if(representsInt(row) and representsInt(col)):
+                row = int(row)
+                col = int(col)
+                if(row >= 0 and row < 8 and col >= 0 and col < 8):
+                    no_good_input = False
+            if(no_good_input):
+                print("Please enter only valid integers 0 - 7")
+        board = make_move(board,player,[row,col])
+    else:
+        moves= actions(board,player)
+        print("NO MOVES {}".format(player))
+        no_move_p = True
+
+    alpha = None
+    move = None
+    print("You made a move")
+    disp_board(board)
+    board_copy = copy_board(board)
+    print('Thinking...')
+    if(cpu_corner_greedy):
+        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_skill,score_corners)
+    else:
+        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_skill,score)
+    if move:
+        board = make_move(board,opp,move)
+        print("Your opponent made a move, row: {}, col: {}".format(move[0],move[1]))
+    else:
+        moves = actions(board,opp)
+        print("NO MOVES {}".format(opp))
+        no_move_op = True
+    
+    move = None
+    alpha = None
+    disp_board(board)
+    if(no_move_p and no_move_op):
+        over = True
+final_score_B = score(board,'B')
+final_score_W = score(board,'W')
+if(final_score_B > final_score_W):
+    print('You win!')
+elif(final_score_W > final_score_B):
+    print('You lose :(')
+else:
+    print('Tie?')
+print(final_score_B,final_score_W)
+
