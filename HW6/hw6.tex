@@ -1,0 +1,79 @@
+\title{CS 472 HW 6}
+\author{
+        Aaron Havens\\
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+\usepackage{amssymb} %maths
+\usepackage{amsmath} %maths
+\usepackage{graphicx}
+\usepackage{array}
+\graphicspath{{../figs/}}
+\begin{document}
+\maketitle\
+
+\paragraph{6.4b)}
+Each class must be satisfied by a classroom, a time slot and a professor.
+Consider these as our three variables.\\
+I. Every prof may only teach one class at a time. \\
+II. Each class that a Professor teaches must be in their set of classes that they can teach.\\
+III. Only one class can be held in each classroom at a time.
+\paragraph{6.7)}
+One possible representation of this problem could be a 2D matrix where the columns represent the country-persons and rows represent house color, candy, drink, cigarette and pet and are numbered according to the brand. This would be convenient because it would be easy to lookup a property by index. This may make it difficult for checking constraints. Another possible representation that may better represent the constraints is to have no matrix structure, but just a variable for each country, color, drink, candy and cigarette which each holds a value representing the house index. Although easier to constrain, this takes up more space memory than the previous method.
+\paragraph{7.2)}From the given statements we can say the following... \\
+if Mythical $\rightarrow$ immortal \\
+if $\neg$Mythical $\rightarrow$ Mortal and Mammal\\
+if Immortal or Mammal $\rightarrow$ Horned \\
+If Horned $\rightarrow$ Magical\\
+There are no statements inferring that it is mythical.
+Because of the first two statements, the unicorn must be either immortal or mortal and mammal so it must be horned. Given that the unicorn is always horned, it must be magical. \\
+\paragraph{7.18 a.)} To solve by enumeration, we can represent the result as a truth table.\\
+Where we evaluate \\
+\textit{statement} $=[(Food \implies Party) \lor (Drinks \implies Party)]\\
+\implies [(Food \land Drinks) \implies Party]$\\
+\begin{table}[h]
+\begin{center}
+\caption{ The Party Food Drinks Truth Table } \label{tab:title} 
+\begin{tabular}{|c|c c c|c|} 
+\hline
+set&Food&Drink&Party&Statement\\ [0.5ex] 
+\hline
+1 & F & F & F  &T\\
+\hline
+2 & T & F & F & T\\
+\hline
+3 & T & T & F & T\\
+\hline
+4 & T & T & T & T\\
+\hline
+5 & F & T & T & T\\
+\hline
+6 & F & F & T & T\\
+\hline
+7 & F & T & F & T\\
+\hline
+8 & T & F & T & T\\[1ex] 
+ \hline
+\end{tabular}
+\end{center}
+\end{table}
+\paragraph{7.18 b.)} For left side of the statement in a.) above.\\
+$(Food \implies Party)\lor (Drinks \implies Party)\\
+(\neg Food \lor Party) \lor (\neg Drinks \lor Party)\\
+(\neg Food \lor Party \lor \neg Drinks \lor Party)\\
+(\neg Food \lor \neg Party \lor Party)$
+\\For the right side of statement.\\
+$(Food \land Drinks) \implies Party\\
+\neg (Food \land Drinks) \lor Party\\
+( \neg Food \lor \neg Drinks) \lor Party \\
+(\neg Food \lor \neg Drinks \lor Party)$\\
+Both sides result in the same statement which always implies itself. Agrees with all rows in the table.
+\paragraph{7.18 c.)} To prove a.), we can use resolution. We will negate the statement in a.) and prove it unsatisfiable.\\
+$\neg [(Food \implies Party) \lor (Drinks \implies Party)]\\
+\implies [(Food \land Drinks) \implies Party]$\\
+$[(Food \implies Party) \lor (Drinks \implies Party)]\\ 
+\land \neg [(Food \land Drinks) \implies Party]$\\
+$(\neg Food \lor \neg Drinks \lor Party) \land Food \land Drinks \land \neg Party\\$
+Oh no, this clause is unsatisfiable.
+\end{document}

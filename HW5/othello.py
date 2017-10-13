@@ -81,6 +81,7 @@ def score_corners(board,player):
     return player_score - opponent_score
 
 #Alpha beta algorithm with depth cutoff. Specify evaluation function. Depths > 5 take a very long time
+#Credit to D H Connelly for inspiring this alpha/beta implementation http://dhconnelly.com/paip-python/docs/paip/othello.html
 def alpha_beta(board,player,alpha,beta,depth,evaluate):
     if depth == 0:
         return evaluate(board,player), None
@@ -192,12 +193,12 @@ def representsInt(s):
 #CONFIG###########
 board = new_board()
 start_config(board)
-cpu_skill = 2
+cpu_depth_cutoff = 3
 cpu_corner_greedy = True
 ##################
 
 print('Welcome to Othello')
-print('Your cpu opponent is set at skill level: {}'.format(cpu_skill))
+print('Your cpu opponent is set at skill level: {}'.format(cpu_depth_cutoff))
 if cpu_corner_greedy:
     print('Your cpu opponent is corner greedy')
 print('You have the first move!')    
@@ -240,9 +241,9 @@ while not over:
     board_copy = copy_board(board)
     print('Thinking...')
     if(cpu_corner_greedy):
-        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_skill,score_corners)
+        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_depth_cutoff,score_corners)
     else:
-        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_skill,score)
+        alpha, move = alpha_beta(board_copy,opp,-1000,1000,cpu_depth_cutoff,score)
     if move:
         board = make_move(board,opp,move)
         print("Your opponent made a move, row: {}, col: {}".format(move[0],move[1]))
